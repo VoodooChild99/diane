@@ -24,7 +24,6 @@ psutil==5.4.6
 ptyprocess==0.6.0
 Pygments==2.2.0
 pyparsing==2.2.0
--e git+https://github.com/badnack/pysoot.git@3eaab4da2f321b91600bc1db2b82166004b5e8cf#egg=pysoot
 python-dateutil==2.7.3
 pytz==2018.5
 scandir==1.7
