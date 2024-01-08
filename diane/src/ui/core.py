@@ -2,6 +2,7 @@ import subprocess
 import signal
 import os
 import os.path
+import re
 
 from config import *
 
@@ -26,11 +27,14 @@ class ADBDriver:
         self.adb_cmd(['push', REPLAY_PATH, '/sdcard/replay'])
         self.adb_su_cmd('cp /sdcard/replay ' + REPLAY_REMOTE_PATH)
         self.adb_su_cmd('chmod 755 ' + REPLAY_REMOTE_PATH)
+        self.fix_regex = [
+            r'FLYME_HIPS_DEBUG:\d*,\d*\s*\[\s*',
+        ]
 
     def set_su_shell(self):
         o, e = self.adb_su_cmd('ls')
         o += e
-        if 'invalid' in o and '-c' in o:
+        if 'invalid' in o and ('-c' in o or '-- c' in o):
             self.c_opt = False
 
     def fix_log(self, f_path):
@@ -38,6 +42,8 @@ class ADBDriver:
         content = f.read()
         f.close()
 
+        for rg in self.fix_regex:
+            content = re.sub(rg, '', content)
         new = content.replace(']', '')
         new = new.replace('.', '-')
 
