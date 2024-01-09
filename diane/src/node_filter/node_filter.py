@@ -2,6 +2,7 @@
 #FIXME: this class needs refactory and consistence
 import os
 import pickle
+import shutil
 from pysoot.lifter import Lifter
 import itertools
 
@@ -135,10 +136,12 @@ class NodeFilter:
             if not self.lifter:
                 self.setup_lifter()
             self._get_nodes_core()
-            pickle_name = '/tmp/leaves_' + self.proc_name
+            pickle_path = '/tmp/leaves_' + self.proc_name
+            pickle_name = 'leaves_' + self.proc_name
             dump_struct = [self.bnodes, self.filter_reasons]
-            pickle.dump(dump_struct, open(pickle_name, "wb"), protocol=pickle.HIGHEST_PROTOCOL)
-            log.info("APK leaves pickled in " + pickle_name)
+            pickle.dump(dump_struct, open(pickle_path, "wb"), protocol=pickle.HIGHEST_PROTOCOL)
+            log.info("APK leaves pickled in {}" + pickle_path)
+            shutil.copy(pickle_path, os.path.join(os.path.dirname(self.apk_path), pickle_name))
 
     @property
     def nodes(self):
