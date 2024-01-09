@@ -30,6 +30,8 @@ class Sniffer:
         self.device_ip = config['device_ip']
         self.ip_hotspot = config['ip_hot_spot']
         self.pass_ap = config['pass_ap']
+        self.user_ap = config['user_ap']
+        self.if_ap = config['if_ap']
         self.keep_alive_filters = []
         self.timer = None
         self.sniffing = False
@@ -61,13 +63,13 @@ class Sniffer:
         # kill remote tcpdump
         if not self.pids:
             log.debug("Killing all tcpdump processes")
-            cmd = 'sshpass -p {} ssh root@{} "killall tcpdump"'.format(self.pass_ap, self.ip_hotspot)
+            cmd = 'sshpass -p {} ssh {}@{} "killall tcpdump"'.format(self.pass_ap, self.user_ap, self.ip_hotspot)
             p = sp.Popen(cmd, stdin=sp.PIPE, stderr=sp.PIPE, shell=True)
             p.communicate()
         else:
             for p in self.pids:
                 log.debug("Killing tcpdump pid: " + p)
-                cmd = 'sshpass -p {} ssh root@{} "kill -9 {}"'.format(self.pass_ap, self.ip_hotspot, p)
+                cmd = 'sshpass -p {} ssh {}@{} "kill -9 {}"'.format(self.pass_ap, self.user_ap, self.ip_hotspot, p)
                 while True:
                     p = sp.Popen(cmd, stdin=sp.PIPE, stderr=sp.PIPE, shell=True)
                     _, e = p.communicate()
@@ -119,7 +121,7 @@ class Sniffer:
         self.pids = [p for p in pids if p not in old_pids]
 
     def get_opened_tcpdumps(self):
-        cmd = "sshpass -p {} ssh root@{} \"ps | grep tcpdump\"".format(self.pass_ap, self.ip_hotspot)
+        cmd = "sshpass -p {} ssh {}@{} \"ps | grep tcpdump\"".format(self.pass_ap, self.user_ap, self.ip_hotspot)
         p = sp.Popen(cmd, stdin=sp.PIPE, stdout=sp.PIPE, stderr=sp.PIPE, shell=True)
         o, e = p.communicate()
         dumps = [x for x in o.split('\n') if 'grep' not in x and x]
@@ -129,8 +131,10 @@ class Sniffer:
     def start_capturing_traffic(self):
         self.create_pipe()
         path_script = os.path.dirname(__file__) + '/' + SNIFF_SCRIPT
-        cmd = "{} {} {} {} {} {}&".format(path_script, self.pass_ap, self.ip_hotspot,
-                                          self.android_ip, self.device_ip, self.apply_keepalive_filters())
+        cmd = "{} {} {} {} {} {} {} {}&".format(path_script, self.pass_ap, self.ip_hotspot,
+                                          self.android_ip, self.device_ip, 
+                                          self.user_ap, self.if_ap,
+                                          self.apply_keepalive_filters())
         pids = self.get_opened_tcpdumps()
         os.system(cmd)
         time.sleep(1)
@@ -157,7 +161,7 @@ class Sniffer:
 
     def dump_all_traffic_to_pcap(self, pcap_path):
         path_script = os.path.dirname(__file__) + '/' + ALL_TRAFFIC_PCAP_SCRIPT
-        cmd = "{} {} {} {}&".format(path_script, self.pass_ap, self.ip_hotspot, pcap_path)
+        cmd = "{} {} {} {} {} {}&".format(path_script, self.pass_ap, self.ip_hotspot, pcap_path, self.user_ap, self.if_ap)
         pids = self.get_opened_tcpdumps()
         os.system(cmd)
         time.sleep(1)
