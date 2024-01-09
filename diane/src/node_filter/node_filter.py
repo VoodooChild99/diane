@@ -25,6 +25,7 @@ class NodeFilter:
         self.apk_path = config['apk_path']
         self.android_sdk = config['android_sdk_platforms']
         self.proc_name = config['proc_name']
+        self.is_blt = config['blt']
         self.lifter = lifter
         self.bnodes = []
         if 'leaf_pickle' not in config:
@@ -84,11 +85,13 @@ class NodeFilter:
             return None, None, None
 
         # filter on package name
-        is_net = any([n for n in NET_PACKAGES if callee_cls.lower().startswith(n)])
-        is_blt = any([n for n in BLT_PACKAGES if callee_cls.lower().startswith(n)])
+        if self.is_blt:
+            is_target = any([n for n in BLT_PACKAGES if callee_cls.lower().startswith(n)])
+        else:
+            is_target = any([n for n in NET_PACKAGES if callee_cls.lower().startswith(n)])
 
         # if is_net or is_blt:
-        if is_blt:
+        if is_target:
             # gotta save strings. Pickle/unpickle won't work with soot :(
             to_save = [callee_cls, callee_mname, callee_params]
             self.filter_reasons[(caller_class.name, caller_method.name, caller_method.params)] = to_save

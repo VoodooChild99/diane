@@ -31,6 +31,7 @@ N_PACKETS = 50
 class SendFinder:
     def __init__(self, config, hooker=None, sniffer=None, bltlog_analyzer=None):
         self.hooker = hooker if hooker else FridaHooker(config)
+        self.is_blt = config['blt']
         self.sniffer = sniffer if sniffer else Sniffer(config)
         self.bltlog_analyzer = bltlog_analyzer if bltlog_analyzer else BltLogAnalyzer()
         self.time_stats = {}
@@ -161,7 +162,9 @@ class SendFinder:
 
         avg_times = [sum(self.time_stats.values()[i])/len(self.time_stats.values()[i])
                      for i in range(len(self.time_stats.values()))]
-        if max(avg_times) - min(avg_times) <= 2:
+        if not avg_times:
+                self.senders = self.superset_senders
+        elif max(avg_times) - min(avg_times) <= 2:
             # we account for network delays: if the delta between the slowest response and the fastest is within
             # couple of seconds, we return the superset senders as possible senders.
             self.senders = self.superset_senders
@@ -218,8 +221,12 @@ class SendFinder:
                 # hook all APK leafs
                 self.hooker.start(leaves=True, fast_hook=True, ignore=ignore)
                 # get possible senders:
-                self.find_superset_senders_blt()
-                self.refine_senders_blt()
+                if self.is_blt:
+                    self.find_superset_senders_blt()
+                    self.refine_senders_blt()
+                else:
+                    self.find_superset_senders()
+                    self.refine_senders()
                 log.debug("Filtered senders: " + str(self.senders))
                 return self.senders
             except Exception as ae:
