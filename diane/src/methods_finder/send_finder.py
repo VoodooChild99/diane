@@ -188,14 +188,17 @@ class SendFinder:
         try:
             avg_times = [sum(map(lambda x: x * (N_PACKETS - len(self.time_stats.values()[i]) + 1), self.time_stats.values()[i]))/len(self.time_stats.values()[i])
                          for i in range(len(self.time_stats.values()))]
-            if max(avg_times) - min(avg_times) <= 2:
+            if not avg_times:
+                self.senders = self.superset_senders
+            elif max(avg_times) - min(avg_times) <= 2:
                 # we account for network delays: if the delta between the slowest response and the fastest is within
                 # couple of seconds, we return the superset senders as possible senders.
                 self.senders = self.superset_senders
             else:
                 # otherwise we find the most promising sender functions.
                 self.vote_sender()
-        except:
+        except Exception as e:
+            log.error(str(e))
             import ipdb;ipdb.set_trace()
 
     def vote_sender(self):

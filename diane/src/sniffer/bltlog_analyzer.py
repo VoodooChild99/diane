@@ -62,6 +62,10 @@ class BltLogAnalyzer:
 
 
     def get_new_sent_packet_ts(self, start_ts):
+        blt_log_file = self._pull_log()
+        if not os.path.exists(blt_log_file):
+            log.debug('No new BL packet')
+            return None
         capture = pyshark.FileCapture(self._pull_log())
         timestamp = None
         for packet in capture:
