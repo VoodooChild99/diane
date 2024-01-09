@@ -1,3 +1,4 @@
+import shutil
 import time
 import frida
 import os
@@ -608,6 +609,8 @@ class FridaHooker:
                    'skip_classes': self.ignore_classes,
                    'skip_methods': self.ignore_methods}
         pickle.dump(to_dump, open(self.dump_result_path, 'w'))
+        proj_result_path = os.path.join(os.path.dirname(self.config['apk_path']), 'frida_results.pickle_{}'.format(self.proc_name))
+        shutil.copy(self.dump_result_path, proj_result_path)
 
     def hook(self, to_hook, pickle_results=False, fast_hook=False, get_instances=False):
         if type(to_hook) != list:
