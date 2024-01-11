@@ -163,6 +163,10 @@ class ADBDriver:
     def replay_ui(self):
         print 'RERAN replaying'
         self.adb_su_cmd(REPLAY_REMOTE_PATH + ' /sdcard/translatedEvents.txt')
+    
+    def stop_reran(self):
+        print 'stop RERAN'
+        self.adb_su_cmd('kill -9 `pgrep -f replay`')
 
     def replay_ui_async(self):
         print 'RERAN replaying (async)'

@@ -40,7 +40,7 @@ class SendFinder:
         self.superset_senders = []
         self.run_fun = None
         self.proc_reran = None
-        self.adb_driver = ADBDriver()
+        self.adb_driver = ADBDriver(device_id=config['device_id'])
 
     def terminate(self):
         self.hooker.terminate()
@@ -52,7 +52,7 @@ class SendFinder:
         found = False
         self.proc_reran = self.run_fun()
         with self.sniffer as sn:
-            for _ in sn.sniff_packets(n_packets=N_PACKETS, sniffing_time=60*5):
+            for _ in sn.sniff_packets(n_packets=None, sniffing_time=60*5):
                 if self.hooker.methods_called:
                     elapsed = time.time() - self.hooker.methods_call_time
                     method = (cls, m, tuple(params), ret)
@@ -66,7 +66,10 @@ class SendFinder:
 
                 # clear the registered called methods
                 self.hooker.clear_methods_called_cache()
-        os.killpg(os.getpgid(self.proc_reran.pid), signal.SIGTERM)
+                if self.proc_reran.poll() is not None:
+                    log.info("Sniffing done: RERAN stops")
+                    sn.terminate()
+                    break
         self.proc_reran = None
         return found
 
@@ -98,6 +101,7 @@ class SendFinder:
             # clear the registered called methods
             self.hooker.clear_methods_called_cache()
 
+        self.adb_driver.stop_reran()
         os.killpg(os.getpgid(self.proc_reran.pid), signal.SIGTERM)
         self.proc_reran = None
         return found
@@ -108,10 +112,15 @@ class SendFinder:
         self.proc_reran = self.run_fun()
         senders = []
         with self.sniffer as sn:
-            for _ in sn.sniff_packets(n_packets=N_PACKETS, sniffing_time=60*5):
-                log.debug('Packet sniffed')
+            num_packet = 0
+            for _ in sn.sniff_packets(n_packets=None, sniffing_time=60*5):
+                num_packet += 1
                 senders += self.hooker.methods_called
-        os.killpg(os.getpgid(self.proc_reran.pid), signal.SIGTERM)
+                if self.proc_reran.poll() is not None:
+                    log.info("Sniffing done: RERAN stops")
+                    log.info('Sniffed {} packets'.format(num_packet))
+                    sn.terminate()
+                    break
         try:
             self.hooker.terminate()
         except ApkKilled as ak:
@@ -139,6 +148,7 @@ class SendFinder:
             # new start_ts
             ts = time.time()
 
+        self.adb_driver.stop_reran()
         os.killpg(os.getpgid(self.proc_reran.pid), signal.SIGTERM)
         try:
             self.hooker.terminate()
@@ -234,6 +244,7 @@ class SendFinder:
                 # crashes
                 log.error(str(ae))
                 if self.proc_reran:
+                    self.adb_driver.stop_reran()
                     os.killpg(os.getpgid(self.proc_reran.pid), signal.SIGTERM)
                 log.error("Something bad happened, re-hooking")
 
