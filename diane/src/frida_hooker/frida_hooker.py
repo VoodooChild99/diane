@@ -30,7 +30,7 @@ SCRIPT_NAMES = ["base_script.js", "object_setter.js", "exports.js"]
 DUMP_RESULTS_PATH = "/tmp/frida_results.pickle"
 TIME_LOG = "/tmp/frida_time.log"
 WAIT_FOR_HOOK_SEC = 5
-WAIT_FOR_SPAWN_SEC = 50
+WAIT_FOR_SPAWN_SEC = 30
 TYPE_DESCRIPTOR = {'short': 'S',
                      'int': 'I',
                      'double': 'D',
@@ -73,7 +73,7 @@ def fun_decorator(f):
         #except TransportError as te:
         #    log.debug("Caught TransportError exception in " + f.__name__)
         except InvalidOperationError as ioe:
-            log.debug("Caught InvalidOperationError exception in " + f.__name__)
+            log.debug("Caught InvalidOperationError exception: {}\n in ".format(ioe) + f.__name__)
             raise ApkExploded('InvalidOperationError')
 
     g.__name__ = f.__name__
