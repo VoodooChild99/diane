@@ -63,13 +63,13 @@ class Sniffer:
         # kill remote tcpdump
         if not self.pids:
             log.debug("Killing all tcpdump processes")
-            cmd = 'sshpass -p {} ssh {}@{} "killall tcpdump"'.format(self.pass_ap, self.user_ap, self.ip_hotspot)
+            cmd = 'sshpass -p {} ssh {}@{} "echo {} | sudo -S killall tcpdump"'.format(self.pass_ap, self.user_ap, self.ip_hotspot, self.pass_ap)
             p = sp.Popen(cmd, stdin=sp.PIPE, stderr=sp.PIPE, shell=True)
             p.communicate()
         else:
             for p in self.pids:
                 log.debug("Killing tcpdump pid: " + p)
-                cmd = 'sshpass -p {} ssh {}@{} "kill -9 {}"'.format(self.pass_ap, self.user_ap, self.ip_hotspot, p)
+                cmd = 'sshpass -p {} ssh {}@{} "echo {} | sudo -S kill -9 {}"'.format(self.pass_ap, self.user_ap, self.ip_hotspot, p, self.pass_ap)
                 while True:
                     p = sp.Popen(cmd, stdin=sp.PIPE, stderr=sp.PIPE, shell=True)
                     _, e = p.communicate()
