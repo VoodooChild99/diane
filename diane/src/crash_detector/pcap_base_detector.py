@@ -55,7 +55,7 @@ class PcapBasedDetector(DefaultCrashDetector):
             self.normal_run_registered = False
             return False
         new_panal = PCAPAnalyzer(self.normal_pcap_path)
-        trs_pkts, rec_pkts = new_panal.filter_packets(self.phone_ip, self.device_ip)
+        trs_pkts, rec_pkts = new_panal.filter_packets(self.phone_ip, self.device_ip, self.is_domain)
         self.normal_transmit_pkts = trs_pkts
         self.normal_received_pkts = rec_pkts
 
@@ -103,7 +103,7 @@ class PcapBasedDetector(DefaultCrashDetector):
             return False
 
         new_pcapanal = PCAPAnalyzer(target_pcap_file)
-        trs_pkts, recv_pkts = new_pcapanal.filter_packets(self.phone_ip, self.device_ip)
+        trs_pkts, recv_pkts = new_pcapanal.filter_packets(self.phone_ip, self.device_ip, self.is_domain)
 
         transmit_data_size = 0
         received_data_size = 0
@@ -142,7 +142,7 @@ class PcapBasedDetector(DefaultCrashDetector):
             return []
 
         new_pcapanal = PCAPAnalyzer(target_pcap_file)
-        return new_pcapanal.get_transport_protocols(self.phone_ip, self.device_ip)
+        return new_pcapanal.get_transport_protocols(self.phone_ip, self.device_ip, self.is_domain)
 
     def tcp_connection_dropped(self, run_regid):
         assert((run_regid in self.run_pcap_map) and "Provided id doesn't exist.")
@@ -152,7 +152,7 @@ class PcapBasedDetector(DefaultCrashDetector):
             return False
 
         new_pcapanal = PCAPAnalyzer(target_pcap_file)
-        trs_pkts, _ = new_pcapanal.filter_packets(self.phone_ip, self.device_ip)
+        trs_pkts, _ = new_pcapanal.filter_packets(self.phone_ip, self.device_ip, self.is_domain)
         return new_pcapanal.is_connection_dropped([x[1] for x in trs_pkts if 'TCP' in repr(x[1])])
 
     def verify_reg_run(self, run_regid):

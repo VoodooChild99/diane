@@ -4,6 +4,7 @@ import random
 import os
 from random_values import RandomValues
 from pcapreader.pcapreader import PcapReader
+from dns import resolver
 # from keyhunter.key_hunter import KeyHunter
 
 OPEN_PLACEHOLDER = '<<-<<'
@@ -17,6 +18,11 @@ class FormattedValues:
         self.fmt_strs = []
         self.android_ip = config['android_ip']
         self.device_ip = config['device_ip']
+        try:
+            _ = int(self.device_ip.split('.')[0])
+            self.is_domain = False
+        except:
+            self.is_domain = True
         self.fmt_data_keys = []
         self.params = {}
         self.current_fmt_str = None
@@ -43,7 +49,15 @@ class FormattedValues:
             pcap_file = pcap_dir + '/' + pcap_file
             reader = PcapReader(pcap_file)
             for p in reader.get_http_packets():
-                if p.dst != self.device_ip:
+                if self.is_domain:
+                    target_address = []
+                    ans = resolver.query(self.device_ip)
+                    for i in ans.response.answer:
+                        for j in i.items:
+                            target_address.append(j.address)
+                else:
+                    target_address = [self.device_ip]
+                if p.dst not in target_address:
                     # we are only interested in traffic
                     # generate for the device
                     continue

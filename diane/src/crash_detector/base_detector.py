@@ -41,6 +41,11 @@ class DefaultCrashDetector:
         self.normal_run_registered = False
         self.phone_ip = config["android_ip"]
         self.device_ip = config["device_ip"]
+        try:
+            _ = int(self.device_ip.split('.')[0])
+            self.is_domain = False
+        except:
+            self.is_domain = True
 
     def start_normal_run(self):
         raise NotImplementedError()

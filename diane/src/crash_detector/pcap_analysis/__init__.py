@@ -1,6 +1,7 @@
 import os
 import dpkt
 import socket
+from dns import resolver
 
 CONNECTION_DROPPED_RETR_THR = 1
 
@@ -22,7 +23,7 @@ class PCAPAnalyzer:
         except ValueError:
             return socket.inet_ntop(socket.AF_INET6, inet)
 
-    def filter_packets(self, phone_ip, device_ip):
+    def filter_packets(self, phone_ip, device_ip, is_domain):
         """
             filter the packets based on the phone ip and device ip
         :param phone_ip: IP of the phone
@@ -45,14 +46,22 @@ class PCAPAnalyzer:
                 src_ip = self.inet_to_str(ip_data.src)
                 # get dst ip
                 dst_ip = self.inet_to_str(ip_data.dst)
-                if src_ip == phone_ip and dst_ip == device_ip:
+                if is_domain:
+                    target_address = []
+                    ans = resolver.query(self.device_ip)
+                    for i in ans.response.answer:
+                        for j in i.items:
+                            target_address.append(j.address)
+                else:
+                    target_ip = [device_ip]
+                if src_ip == phone_ip and dst_ip in target_ip:
                     transmit_pkts.append((ip_data, ip_data.data))
-                if src_ip == device_ip and src_ip == phone_ip:
+                if src_ip in target_ip and src_ip == phone_ip:
                     received_pkts.append((ip_data, ip_data.data))
 
         return transmit_pkts, received_pkts
 
-    def get_transport_protocols(self, phone_ip, device_ip):
+    def get_transport_protocols(self, phone_ip, device_ip, is_domain):
         tcp_c = 0
         udp_c = 0
         unk_c = 0
@@ -74,9 +83,17 @@ class PCAPAnalyzer:
                 dst_ip = self.inet_to_str(ip_data.dst)
 
                 to_consider = False
-                if src_ip == phone_ip and dst_ip == device_ip:
+                if is_domain:
+                    target_address = []
+                    ans = resolver.query(self.device_ip)
+                    for i in ans.response.answer:
+                        for j in i.items:
+                            target_address.append(j.address)
+                else:
+                    target_ip = [device_ip]
+                if src_ip == phone_ip and dst_ip in target_ip:
                     to_consider = True
-                if src_ip == device_ip and src_ip == phone_ip:
+                if src_ip in target_ip and src_ip == phone_ip:
                     to_consider = True
 
                 if to_consider:
