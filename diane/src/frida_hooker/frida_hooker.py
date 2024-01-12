@@ -156,6 +156,11 @@ class FridaHooker:
         self.method_n_repeatitions = 0
         self.method_tot_repeatitions = -1
 
+        if 'spawn_timeout' in config and isinstance(config['spawn_timeout'], int) and config['spawn_timeout'] > 0:
+            global WAIT_FOR_SPAWN_SEC
+            WAIT_FOR_SPAWN_SEC = config['spawn_timeout']
+            log.debug("App spawn timeout set to {} seconds.".format(WAIT_FOR_SPAWN_SEC))
+
         self.good_hooks = {}
         self.setup()
 
