@@ -52,7 +52,9 @@ class SendFinder:
         found = False
         self.proc_reran = self.run_fun()
         with self.sniffer as sn:
+            num_packet = 0
             for _ in sn.sniff_packets(n_packets=None, sniffing_time=60*5):
+                num_packet += 1
                 if self.hooker.methods_called:
                     elapsed = time.time() - self.hooker.methods_call_time
                     method = (cls, m, tuple(params), ret)
@@ -67,6 +69,7 @@ class SendFinder:
                 # clear the registered called methods
                 self.hooker.clear_methods_called_cache()
                 if self.proc_reran.poll() is not None:
+                    log.info('Sniffed {} packets'.format(num_packet))
                     log.info("Sniffing done: RERAN stops")
                     sn.terminate()
                     break
