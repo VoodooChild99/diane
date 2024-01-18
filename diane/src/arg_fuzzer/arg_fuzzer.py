@@ -450,6 +450,9 @@ class ArgFuzzer:
         # if methods take no argument, we will fuzz
         # every simple objects in its class
         cls = method[0]
+        if cls not in self.lifter.classes:
+            log.info("Cannot fuzz class {} because it is not lifted, ignore".format(cls))
+            return
         class_fields = self.get_class_fields(cls)
 
         if not fast_fuzz:
