@@ -450,6 +450,11 @@ class ArgFuzzer:
         # if methods take no argument, we will fuzz
         # every simple objects in its class
         cls = method[0]
+        if not self.lifter:
+            log.info("Building lifter")
+            apk_path = self.config["apk_path"]
+            android_sdk = self.config["android_sdk_platforms"]
+            self.lifter = Lifter(apk_path, input_format="apk", android_sdk=android_sdk)
         if cls not in self.lifter.classes:
             log.info("Cannot fuzz class {} because it is not lifted, ignore".format(cls))
             return
