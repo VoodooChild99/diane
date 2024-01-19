@@ -206,6 +206,8 @@ class ArgFuzzer:
                 worklist = worklist[1:]
                 if cls == 'java.lang.Object':
                     break
+                if cls not in self.lifter.classes:
+                    continue
                 clx = self.lifter.classes[cls]
                 fields += map(rename_for_frida, clx.fields.items())
                 worklist.append(clx.super_class)
