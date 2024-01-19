@@ -1,3 +1,4 @@
+import os
 import sys
 import json
 import time
@@ -158,6 +159,9 @@ class IoTFuzzer:
             elapsed_time = time.time() - starting_time
             eval_stats.write('Time (s): {}\nSenders: {}\n'.format(str(elapsed_time), str(self.senders)))
             log.debug("Possible senders {}".format(str(self.senders)))
+            senders_save = os.path.join(os.path.dirname(self.config['apk_path']), "senders.json")
+            with open(senders_save, 'w') as f:
+                json.dump(self.senders, f)
 
         if not self.sp and phase >= Phase.FUZZING_CANDIDATES:
             if not self.lifter:
@@ -169,6 +173,9 @@ class IoTFuzzer:
             elapsed_time = time.time() - starting_time
             eval_stats.write('Time (s): {}\nsweet spots: {}\n'.format(str(elapsed_time), str(self.sp)))
             log.debug("Sweet spots: {}".format(str(self.sp)))
+            sweet_spot_save = os.path.join(os.path.dirname(self.config['apk_path']), "sweet_spot.json")
+            with open(sweet_spot_save, 'w') as f:
+                json.dump(self.sp, f)
 
         if phase >= Phase.FUZZING:
             self.phase = Phase.FUZZING
