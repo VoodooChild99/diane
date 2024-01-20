@@ -171,7 +171,7 @@ class ArgFuzzer:
                 log.error("fuzz_primitive has does not have a function for type {}".format(obj_type))
                 continue
 
-            key_h = (field_name, obj_type)
+            key_h = (field_name, "NONE", obj_type)
             if key_h not in self.fuzz_history:
                 self.fuzz_history[key_h] = []
             self.fuzz_history[key_h].append(field_val)
@@ -474,8 +474,8 @@ class ArgFuzzer:
                 log.error("Field {} is not of a primitive type.. skipping this one. Implement me.".format(fname))
                 continue
 
-            fuzzed = self.do_fuzz(method, self.spawn_and_fuzz_class_field, ran_fun, fname,
-                            ftype_info, N_FUZZ, fast_fuzz=fast_fuzz)
+            fuzzed = self.do_fuzz(method, self.spawn_and_fuzz_class_field, ran_fun, N_FUZZ, fname,
+                            ftype_info, fast_fuzz=fast_fuzz)
             if not fuzzed:
                 log.debug("Reran finished and sweet spot was not encoutered.")
                 break
