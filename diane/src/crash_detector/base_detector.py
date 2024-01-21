@@ -34,13 +34,14 @@ obj.verify_reg_run(unique_key) => if this is true, then no crash else crash
 
 
 class DefaultCrashDetector:
-    def __init__(self, config, sniffer=None):
+    def __init__(self, config):
         self.len_normal_run = 0
-        self.sniffer = sniffer if sniffer else Sniffer(config)
+        is_cloud = 'cloud_ip' in config
+        self.sniffer = Sniffer(config, cloud=is_cloud)
         self.ran_fun = None
         self.normal_run_registered = False
-        self.phone_ip = config["android_ip"]
-        self.device_ip = config["device_ip"]
+        self.phone_ip = config['cloud_ip'] if 'cloud_ip' in config else config["android_ip"]
+        self.device_ip = config['phys_ip'] if 'phys_ip' in config else config["device_ip"]
         try:
             _ = int(self.device_ip.split('.')[0])
             self.is_domain = False

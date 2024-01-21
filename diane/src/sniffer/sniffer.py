@@ -24,14 +24,22 @@ class StopCapturing(Exception):
 
 
 class Sniffer:
-    def __init__(self, config):
+    def __init__(self, config, cloud=False):
         global SYNC_SNIFFING
-        self.android_ip = config['android_ip']
-        self.device_ip = config['device_ip']
-        self.ip_hotspot = config['ip_hot_spot']
-        self.pass_ap = config['pass_ap']
-        self.user_ap = config['user_ap']
-        self.if_ap = config['if_ap']
+        if not cloud:
+            self.android_ip = config['android_ip']
+            self.device_ip = config['device_ip']
+            self.ip_hotspot = config['ip_hot_spot']
+            self.pass_ap = config['pass_ap']
+            self.user_ap = config['user_ap']
+            self.if_ap = config['if_ap']
+        else:
+            self.android_ip = config['cloud_ip']
+            self.device_ip = config['phys_ip']
+            self.ip_hotspot = config['ip_hot_spot_cloud']
+            self.pass_ap = config['pass_ap_cloud']
+            self.user_ap = config['user_ap_cloud']
+            self.if_ap = config['if_ap_cloud']
         self.keep_alive_filters = []
         self.timer = None
         self.sniffing = False

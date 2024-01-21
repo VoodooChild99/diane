@@ -16,8 +16,8 @@ class PcapBasedDetector(DefaultCrashDetector):
     """
     This detector is based on pcap size.
     """
-    def __init__(self, config, sniffer=None):
-        DefaultCrashDetector.__init__(self, config, sniffer=sniffer)
+    def __init__(self, config):
+        DefaultCrashDetector.__init__(self, config)
 
         self.pcap_work_dir = os.path.join("/tmp", config["proc_name"] + "_pcap_dir")
         if "fuzz_pcap_path" in config:
