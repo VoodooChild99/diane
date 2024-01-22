@@ -271,7 +271,11 @@ class SweetSpotFinder:
             return 0
 
         total = len(val_bytes)
-        byte_counts = bytearray.fromhex(''.join(val_bytes))
+        try:
+            byte_counts = bytearray.fromhex(''.join(val_bytes))
+        except ValueError as e:
+            log.warning("Failed to get shannon entropy for {}: {}. Skipping.".format(val_bytes, e))
+            return 0
         entropy = 0
 
         for count in byte_counts:
