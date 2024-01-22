@@ -6,8 +6,9 @@ from dns import resolver
 CONNECTION_DROPPED_RETR_THR = 1
 
 class PCAPAnalyzer:
-    def __init__(self, pcap_file):
+    def __init__(self, pcap_file, is_cloud=False):
         self.target_pcap_file = pcap_file
+        self.is_cloud = is_cloud
 
     def inet_to_str(self, inet):
         """Convert inet object to a string
@@ -46,17 +47,25 @@ class PCAPAnalyzer:
                 src_ip = self.inet_to_str(ip_data.src)
                 # get dst ip
                 dst_ip = self.inet_to_str(ip_data.dst)
+
+                if self.is_cloud:
+                    if dst_ip == device_ip:
+                        transmit_pkts.append((ip_data, ip_data.data))
+                    if src_ip == device_ip:
+                        received_pkts.append((ip_data, ip_data.data))
+                    continue
+
                 if is_domain:
-                    target_address = []
+                    target_ip = []
                     ans = resolver.query(self.device_ip)
                     for i in ans.response.answer:
                         for j in i.items:
-                            target_address.append(j.address)
+                            target_ip.append(j.address)
                 else:
                     target_ip = [device_ip]
                 if src_ip == phone_ip and dst_ip in target_ip:
                     transmit_pkts.append((ip_data, ip_data.data))
-                if src_ip in target_ip and src_ip == phone_ip:
+                if src_ip in target_ip and dst_ip == phone_ip:
                     received_pkts.append((ip_data, ip_data.data))
 
         return transmit_pkts, received_pkts
@@ -83,18 +92,21 @@ class PCAPAnalyzer:
                 dst_ip = self.inet_to_str(ip_data.dst)
 
                 to_consider = False
-                if is_domain:
-                    target_address = []
-                    ans = resolver.query(self.device_ip)
-                    for i in ans.response.answer:
-                        for j in i.items:
-                            target_address.append(j.address)
+                if self.is_cloud:
+                    to_consider = True
                 else:
-                    target_ip = [device_ip]
-                if src_ip == phone_ip and dst_ip in target_ip:
-                    to_consider = True
-                if src_ip in target_ip and src_ip == phone_ip:
-                    to_consider = True
+                    if is_domain:
+                        target_ip = []
+                        ans = resolver.query(self.device_ip)
+                        for i in ans.response.answer:
+                            for j in i.items:
+                                target_ip.append(j.address)
+                    else:
+                        target_ip = [device_ip]
+                    if src_ip == phone_ip and dst_ip in target_ip:
+                        to_consider = True
+                    if src_ip in target_ip and dst_ip == phone_ip:
+                        to_consider = True
 
                 if to_consider:
                     if ip_data.p == dpkt.ip.IP_PROTO_TCP:

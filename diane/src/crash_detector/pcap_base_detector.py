@@ -41,7 +41,7 @@ class PcapBasedDetector(DefaultCrashDetector):
         :return: None
         """
         self.sniffer.terminate()
-        self.sniffer.dump_all_traffic_to_pcap(self.normal_pcap_path)
+        self.sniffer.dump_some_traffic_to_pcap(self.normal_pcap_path)
 
     def stop_normal_run(self):
         """
@@ -54,7 +54,7 @@ class PcapBasedDetector(DefaultCrashDetector):
                          "Make sure that the router is working fine.")
             self.normal_run_registered = False
             return False
-        new_panal = PCAPAnalyzer(self.normal_pcap_path)
+        new_panal = PCAPAnalyzer(self.normal_pcap_path, self.is_cloud)
         trs_pkts, rec_pkts = new_panal.filter_packets(self.phone_ip, self.device_ip, self.is_domain)
         self.normal_transmit_pkts = trs_pkts
         self.normal_received_pkts = rec_pkts
@@ -76,7 +76,7 @@ class PcapBasedDetector(DefaultCrashDetector):
         new_regid = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(8))
         new_pcap_file = os.path.join(self.pcap_work_dir, new_regid + ".pcap")
         self.run_pcap_map[new_regid] = new_pcap_file
-        self.sniffer.dump_all_traffic_to_pcap(new_pcap_file)
+        self.sniffer.dump_some_traffic_to_pcap(new_pcap_file)
         return new_regid
 
     def stop_reg_run(self, run_regid):
@@ -102,7 +102,7 @@ class PcapBasedDetector(DefaultCrashDetector):
         if os.path.getsize(target_pcap_file) == 0:
             return False
 
-        new_pcapanal = PCAPAnalyzer(target_pcap_file)
+        new_pcapanal = PCAPAnalyzer(target_pcap_file, self.is_cloud)
         trs_pkts, recv_pkts = new_pcapanal.filter_packets(self.phone_ip, self.device_ip, self.is_domain)
 
         transmit_data_size = 0
@@ -141,7 +141,7 @@ class PcapBasedDetector(DefaultCrashDetector):
         if os.path.getsize(target_pcap_file) == 0:
             return []
 
-        new_pcapanal = PCAPAnalyzer(target_pcap_file)
+        new_pcapanal = PCAPAnalyzer(target_pcap_file, self.is_cloud)
         return new_pcapanal.get_transport_protocols(self.phone_ip, self.device_ip, self.is_domain)
 
     def tcp_connection_dropped(self, run_regid):
@@ -151,7 +151,7 @@ class PcapBasedDetector(DefaultCrashDetector):
         if os.path.getsize(target_pcap_file) == 0:
             return False
 
-        new_pcapanal = PCAPAnalyzer(target_pcap_file)
+        new_pcapanal = PCAPAnalyzer(target_pcap_file, self.is_cloud)
         trs_pkts, _ = new_pcapanal.filter_packets(self.phone_ip, self.device_ip, self.is_domain)
         return new_pcapanal.is_connection_dropped([x[1] for x in trs_pkts if 'TCP' in repr(x[1])])
 

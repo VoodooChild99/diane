@@ -364,15 +364,15 @@ class ArgFuzzer:
         while remain_reps > 0 or unlimited:
             try:
                 spawn_and_prepare_ran(method, reps, *kargs, **kwargs)
-                #reg_id = self.an.start_reg_run()
+                reg_id = self.an.start_reg_run()
                 self.reran_proc = ran_fun()
                 self.wait_for_reran()
                 # check and save run results
-                #self.an.stop_reg_run(reg_id)
+                self.an.stop_reg_run(reg_id)
 
-                #if not self.an.verify_reg_run(reg_id):
-                #    log.info("Interesting run registered")
-                self.save_run()
+                if not self.an.verify_reg_run(reg_id):
+                    log.info("Interesting run registered")
+                    self.save_run()
 
                 # check how many times function has been executed
                 n_repeated = self.hooker.get_n_repeated()
@@ -482,10 +482,10 @@ class ArgFuzzer:
             log.info("Object fuzzed")
 
     def register_normal_run(self, ran_fun):
-        #self.an.start_normal_run()
-        #ran_fun()
-        #if not self.an.stop_normal_run():
-        #    log.error("Can't save pcap files to verify fuzzing results")
+        self.an.start_normal_run()
+        ran_fun()
+        if not self.an.stop_normal_run():
+           log.error("Can't save pcap files to verify fuzzing results")
         pass
 
     def get_res_complete_path(self, method):

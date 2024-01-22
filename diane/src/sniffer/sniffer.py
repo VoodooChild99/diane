@@ -13,6 +13,7 @@ log.setLevel(logging.DEBUG)
 
 SNIFF_SCRIPT = "./sniff.sh"
 ALL_TRAFFIC_PCAP_SCRIPT = "./dump_to_pcap.sh"
+SOME_TRAFFIC_PCAP_SCRIPT = "./dump_some_pcap.sh"
 FIFO_PIPE = "/tmp/sniff_data"
 SNIFFING_TIME_SEC = 60 * 30
 KEEPALIVE_TIMEOUT_SEC = 60 * 1
@@ -26,6 +27,7 @@ class StopCapturing(Exception):
 class Sniffer:
     def __init__(self, config, cloud=False):
         global SYNC_SNIFFING
+        self.is_cloud = cloud
         if not cloud:
             self.android_ip = config['android_ip']
             self.device_ip = config['device_ip']
@@ -34,7 +36,7 @@ class Sniffer:
             self.user_ap = config['user_ap']
             self.if_ap = config['if_ap']
         else:
-            self.android_ip = config['cloud_ip']
+            self.android_ip = ""
             self.device_ip = config['phys_ip']
             self.ip_hotspot = config['ip_hot_spot_cloud']
             self.pass_ap = config['pass_ap_cloud']
@@ -167,6 +169,14 @@ class Sniffer:
             counter += 1
             yield line
 
+    def dump_some_traffic_to_pcap(self, pcap_path):
+        path_script = os.path.dirname(__file__) + '/' + SOME_TRAFFIC_PCAP_SCRIPT
+        cmd = "{} {} {} {} {} {} {}&".format(path_script, self.pass_ap, self.ip_hotspot, pcap_path, self.user_ap, self.if_ap, self.device_ip)
+        pids = self.get_opened_tcpdumps()
+        os.system(cmd)
+        time.sleep(1)
+        self.find_pids(pids)
+    
     def dump_all_traffic_to_pcap(self, pcap_path):
         path_script = os.path.dirname(__file__) + '/' + ALL_TRAFFIC_PCAP_SCRIPT
         cmd = "{} {} {} {} {} {}&".format(path_script, self.pass_ap, self.ip_hotspot, pcap_path, self.user_ap, self.if_ap)
