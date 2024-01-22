@@ -298,8 +298,10 @@ class FridaHooker:
         signal.signal(signal.SIGUSR1, self.signal_handler)
 
         # setup frida
-        self.device = frida.get_device_manager().add_remote_device("localhost:27047")
-        # self.device = frida.get_device(self.device_id)
+        if 'enable_bypass' in self.config and self.config['enable_bypass']:
+            self.device = frida.get_device_manager().add_remote_device("localhost:27047")
+        else:
+            self.device = frida.get_device(self.device_id)
         self.script_cnt = ''
         for name in SCRIPT_NAMES:
             path_script = os.path.dirname(__file__) + '/' + name
