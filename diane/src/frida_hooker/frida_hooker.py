@@ -554,7 +554,8 @@ class FridaHooker:
 
                 elif not self.force_hook:
                     log.warning("Removing last hook and trying again")
-                    self.ignore_methods.append(self.hooking_method)
+                    if self.hooking_method:
+                        self.ignore_methods.append(self.hooking_method)
 
             except ApkExploded:
 
@@ -577,7 +578,8 @@ class FridaHooker:
 
                             else:
                                 log.warning("Removing last hook")
-                                self.ignore_methods.append(self.hooking_method)
+                                if self.hooking_method:
+                                    self.ignore_methods.append(self.hooking_method)
 
                         else:
                             if len(to_hook) == 0:
