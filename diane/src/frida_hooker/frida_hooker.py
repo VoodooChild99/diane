@@ -155,6 +155,7 @@ class FridaHooker:
         self.method_repeat_done = False
         self.method_n_repeatitions = 0
         self.method_tot_repeatitions = -1
+        self.ignore_methods_save = os.path.join(os.path.dirname(self.config['apk_path']), "ignore_methods.json")
 
         if 'spawn_timeout' in config and isinstance(config['spawn_timeout'], int) and config['spawn_timeout'] > 0:
             global WAIT_FOR_SPAWN_SEC
@@ -517,6 +518,8 @@ class FridaHooker:
         return None
 
     def sanitize_hooks(self, hooks):
+        with open(self.ignore_methods_save, 'w') as f:
+            json.dump(self.ignore_methods, f)
         return [l for l in hooks if l not in self.ignore_methods and
                 l[0] not in self.ignore_classes]
 
