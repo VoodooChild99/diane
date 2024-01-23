@@ -203,8 +203,8 @@ class SweetSpotFinder:
         elif hasattr(stmt, 'right_op'):
             arg_vars = [a for a in stmt.right_op.args if hasattr(a, 'name')]
         else:
-            import ipdb;
-            ipdb.set_trace()
+            import pdb;
+            pdb.set_trace()
             arg_vars = []
         return arg_vars
 
@@ -640,7 +640,7 @@ class SweetSpotFinder:
                        'type': 'object_field'}
                 _, tmp_dd, dep_caller = self.get_function_setter(inp, m)
                 #if tmp_dd:
-                #    import ipdb; ipdb.set_trace()
+                #    import pdb; pdb.set_trace()
                 self.sweet_spots += tmp_dd
                 if dep_caller:
                     method_our_notation = [m.class_name, m.name, list(m.params), m.ret]
@@ -745,5 +745,5 @@ if __name__ == "__main__":
     print "Time (s): " + str(tot_elapsed_time)
     print res
     print so
-    import ipdb; ipdb.set_trace()
+    import pdb; pdb.set_trace()
     print "Done"

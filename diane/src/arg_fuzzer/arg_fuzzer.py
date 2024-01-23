@@ -299,7 +299,7 @@ class ArgFuzzer:
                                 if '[' in vals:
                                     vals = vals[1:-1].split(', ')
                             except:
-                                import ipdb; ipdb.set_trace()
+                                import pdb; pdb.set_trace()
                             base_type = p_type.strip('[]')
                             nelem = 1
 
@@ -314,7 +314,7 @@ class ArgFuzzer:
                                 try:
                                     par_val = map(getattr(self.vals, 'str_to_' + str(base_type.replace('.', '_'))), vals)
                                 except:
-                                    import ipdb; ipdb.set_trace()
+                                    import pdb; pdb.set_trace()
 
                                     par_val = map(getattr(self.vals, 'str_to_' + str(base_type.replace('.', '_'))), vals)
 

@@ -171,7 +171,7 @@ class SendFinder:
                 self.collect_time_stats_sender(cls, m, params, ret)
             except Exception as e:
                 log.error(str(e))
-                import ipdb; ipdb.set_trace()
+                import pdb; pdb.set_trace()
 
         avg_times = [sum(self.time_stats.values()[i])/len(self.time_stats.values()[i])
                      for i in range(len(self.time_stats.values()))]
@@ -199,7 +199,7 @@ class SendFinder:
                             break
                 except Exception as e:
                     log.error(str(e))
-                    import ipdb; ipdb.set_trace()
+                    import pdb; pdb.set_trace()
 
         try:
             avg_times = [sum(map(lambda x: x * (N_PACKETS - len(self.time_stats.values()[i]) + 1), self.time_stats.values()[i]))/len(self.time_stats.values()[i])
@@ -215,7 +215,7 @@ class SendFinder:
                 self.vote_sender()
         except Exception as e:
             log.error(str(e))
-            import ipdb;ipdb.set_trace()
+            import pdb;pdb.set_trace()
 
     def vote_sender(self):
         if len(self.time_stats.keys()) >= 2:

@@ -165,5 +165,5 @@ if __name__ == '__main__':
 
     nf = NodeFilter(config, reload=True)
     print len(nf.nodes)
-    import ipdb; ipdb.set_trace()
+    import pdb; pdb.set_trace()
     print "Done"

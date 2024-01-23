@@ -117,7 +117,7 @@ class KeyHunter:
         print "[DEBUG]: direct_refs", direct_refs
         indirect_refs = get_indirect_str_refs(p, cfg, str_addrs)
         print "[DEBUG]: indirect_refs", indirect_refs
-        import ipdb; ipdb.set_trace()
+        import pdb; pdb.set_trace()
 
         for a, s in direct_refs + indirect_refs:
             print "[DEBUG]: (a, s)", a, s, type(a), type(s)
@@ -135,7 +135,7 @@ class KeyHunter:
                         info_collected[s.address].append(ret)
                     else:
                         self.logger.error("Architecture doesn't use registers to pass function parameters")
-                        import ipdb; ipdb.set_trace()
+                        import pdb; pdb.set_trace()
 
                     if only_one:
                         break
@@ -199,11 +199,11 @@ class KeyHunter:
                                     function_parameter_values = (observation_point, reg_off, parameter, call_target)
                                     function_parameters_at_obs_pt.append(function_parameter_values)
                 except Exception as e:
-                    import ipdb; ipdb.set_trace()
+                    import pdb; pdb.set_trace()
             return function_parameters_at_obs_pt
         else:
             self.logger.warning('Calling convention is not supported')
-            import ipdb; ipdb.set_trace()
+            import pdb; pdb.set_trace()
 
 
     def _get_all_function_parameters_at_all_callsites(self):

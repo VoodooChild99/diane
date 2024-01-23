@@ -196,7 +196,7 @@ class FridaHooker:
         except:
             pass
         if self.is_running:
-            import ipdb; ipdb.set_trace()
+            import pdb; pdb.set_trace()
         #assert not self.is_running, "signal_handler did not set is_running to False"
 
     def was_called(self, cls, method, args):

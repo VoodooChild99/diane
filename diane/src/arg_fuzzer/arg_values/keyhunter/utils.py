@@ -183,7 +183,7 @@ def get_indirect_str_refs(p, cfg, str_addrs):
             # we collect both references
             ret += [(s.address, s) for k, s in cfg.insn_addr_to_memory_data.items() if s.address == pt]
             ret += [(ind_addr, s) for k, s in cfg.insn_addr_to_memory_data.items() if s.address == pt for ind_addr in str_addrs]
-    import ipdb; ipdb.set_trace()
+    import pdb; pdb.set_trace()
     print "[DEBUG]: ", ret
     return ret
 
@@ -220,8 +220,8 @@ def get_args_call(p, no):
                 vals[state].append((ins_arg.offset, ins_arg.data.constants[0].value))
             else:
                 print("Cant' get the value for function call")
-                import ipdb
-                ipdb.set_trace()
+                import pdb
+                pdb.set_trace()
     return vals
 
 
