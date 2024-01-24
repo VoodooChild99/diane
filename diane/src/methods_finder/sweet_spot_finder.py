@@ -4,6 +4,7 @@ import math
 import logging
 from os.path import dirname, abspath
 import sys
+import pdb
 sys.path.append(dirname(dirname(abspath(__file__))))
 
 from frida_hooker.frida_hooker import FridaHooker, ApkExploded, ApkKilled, ApkStuck, FridaRunner
@@ -657,10 +658,19 @@ class SweetSpotFinder:
         # ugly AF, but for this submission gotta go like this
         for i in xrange(len(self.sweet_spots)):
             if type(self.sweet_spots[i]) == list:
-                self.sweet_spots[i] = (self.sweet_spots[i][0], self.sweet_spots[i][1], tuple(self.sweet_spots[i][2]), self.sweet_spots[i][3])
+                try:
+                    self.sweet_spots[i] = (self.sweet_spots[i][0], self.sweet_spots[i][1], tuple(self.sweet_spots[i][2]), self.sweet_spots[i][3])
+                except Exception as e:
+                    log.error(e)
+                    pdb.set_trace()
         self.sweet_spots = list(set(self.sweet_spots))
         for i in xrange(len(self.sweet_spots)):
-            self.sweet_spots[i] = [self.sweet_spots[i][0], self.sweet_spots[i][1], list(self.sweet_spots[i][2]), self.sweet_spots[i][3]]
+            try:
+                self.sweet_spots[i] = [self.sweet_spots[i][0], self.sweet_spots[i][1], list(self.sweet_spots[i][2]), self.sweet_spots[i][3]]
+            except Exception as e:
+                log.error(e)
+                pdb.set_trace()
+        
 
         new_ss = []
 
