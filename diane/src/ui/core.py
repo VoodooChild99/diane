@@ -129,9 +129,7 @@ class ADBDriver:
             cmd = cmd + ' shell \'su 0 {0}\''.format(args)
 
         print 'Executing ' + cmd
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
-                                  stderr=subprocess.PIPE,
-                                  shell=True, preexec_fn=os.setsid)
+        p = subprocess.Popen(cmd, shell=True, preexec_fn=os.setsid)
         return p
 
     def adb_sighandler(self, signum, frame):
@@ -170,7 +168,7 @@ class ADBDriver:
 
     def replay_ui_async(self):
         print 'RERAN replaying (async)'
-        return self.adb_su_cmd_async(REPLAY_REMOTE_PATH + ' /sdcard/translatedEvents.txt')
+        return self.adb_su_cmd_async(REPLAY_REMOTE_PATH + ' /sdcard/translatedEvents.txt &> /dev/null')
 
     def start_monkey(self, package=None, seed=None, throttle=THROTTLE,
                      pct_syskeys=PCT_SYSKEYS, pct_anyevent=PCT_ANYEVENT,
