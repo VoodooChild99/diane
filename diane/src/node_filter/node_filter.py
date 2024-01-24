@@ -11,7 +11,7 @@ import logging
 logging.basicConfig()
 log = logging.getLogger("NodeFilter")
 log.setLevel(logging.DEBUG)
-
+log.addHandler(logging.FileHandler("/root/workdir/log-diane.log"))
 
 NET_PACKAGES = ['java.net.', 'javax.net.', 'android.net.', 'android.webkit.', 'org.apache.']#, 'java.io.printstream', 'java.io.outputstream']
 BLT_PACKAGES = ['android.bluetooth.']

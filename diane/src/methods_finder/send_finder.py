@@ -24,6 +24,7 @@ import logging
 logging.basicConfig()
 log = logging.getLogger("SendFinder")
 log.setLevel(logging.DEBUG)
+log.addHandler(logging.FileHandler("/root/workdir/log-diane.log"))
 
 N_PACKETS = 50
 

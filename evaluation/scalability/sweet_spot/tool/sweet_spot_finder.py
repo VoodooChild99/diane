@@ -24,6 +24,7 @@ LIFTER_PICKLE = "/tmp/lifter.pk"
 logging.basicConfig()
 log = logging.getLogger("SweetSpotFinder")
 log.setLevel(logging.DEBUG)
+log.addHandler(logging.FileHandler("/root/workdir/log-diane.log"))
 
 DK_MATH_OPS = ['neg-', 'add-', 'sub-', 'mul-', 'div-']
 DK_BIT_OPS = ['and-', 'or-', 'xor-', 'shl-', 'shr-', 'ushr-']

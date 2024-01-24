@@ -19,6 +19,7 @@ import logging
 logging.basicConfig()
 log = logging.getLogger("ApkFuzzer")
 log.setLevel(logging.DEBUG)
+log.addHandler(logging.FileHandler("/root/workdir/log-diane.log"))
 
 RERAN_RECORD_PATH = '/tmp/reran.log'
 

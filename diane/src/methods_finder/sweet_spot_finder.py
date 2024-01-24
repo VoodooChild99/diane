@@ -22,7 +22,7 @@ LIFTER_PICKLE = "/tmp/lifter.pk"
 logging.basicConfig()
 log = logging.getLogger("SweetSpotFinder")
 log.setLevel(logging.DEBUG)
-
+log.addHandler(logging.FileHandler("/root/workdir/log-diane.log"))
 
 class Dep(Enum):
     RET = 0

@@ -13,6 +13,7 @@ import logging
 logging.basicConfig(format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s')
 log = logging.getLogger("CrashDetector")
 log.setLevel(logging.DEBUG)
+log.addHandler(logging.FileHandler("/root/workdir/log-diane.log"))
 
 ANOMALY_THRESHOLD = 0.5
 

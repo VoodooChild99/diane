@@ -23,6 +23,7 @@ import logging
 logging.basicConfig()
 log = logging.getLogger("FridaHooker")
 log.setLevel(logging.DEBUG)
+log.addHandler(logging.FileHandler("/root/workdir/log-diane.log"))
 
 GRANULARITY_IGN_HOOK = 1
 SUCC_THRESH_HOOK = 1

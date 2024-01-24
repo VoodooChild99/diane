@@ -11,7 +11,7 @@ from ui.core import ADBDriver
 logging.basicConfig()
 log = logging.getLogger("BltLogAnalyzer")
 log.setLevel(logging.DEBUG)
-
+log.addHandler(logging.FileHandler("/root/workdir/log-diane.log"))
 
 LOCAL_LOGFILE_PATH = '/tmp/diane_log_bluetooth.log'
 REMOTE_LOGFILE_PATH = '/data/misc/bluetooth/logs/btsnoop_hci.log'

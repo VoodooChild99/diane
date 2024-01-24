@@ -18,6 +18,7 @@ from ui.core import ADBDriver
 logging.basicConfig()
 log = logging.getLogger("ArgFuzzer")
 log.setLevel(logging.DEBUG)
+log.addHandler(logging.FileHandler("/root/workdir/log-diane.log"))
 
 PRIMITIVE_TYPES = ["byte", "short", "int", "long", "char", "float", "double", "boolean", "[B", "[I"]
 KNOWN_OBJ = ["java.lang.String", "java.lang.Integer", "java.lang.Float", "java.lang.Double", "java.nio.ByteBuffer"]

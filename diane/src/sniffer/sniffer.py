@@ -10,6 +10,7 @@ from multiprocessing import Process
 logging.basicConfig()
 log = logging.getLogger("Sniffer")
 log.setLevel(logging.DEBUG)
+log.addHandler(logging.FileHandler("/root/workdir/log-diane.log"))
 
 SNIFF_SCRIPT = "./sniff.sh"
 ALL_TRAFFIC_PCAP_SCRIPT = "./dump_to_pcap.sh"
