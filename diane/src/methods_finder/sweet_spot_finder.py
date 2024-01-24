@@ -656,14 +656,17 @@ class SweetSpotFinder:
 
     def clean_ss(self):
         # ugly AF, but for this submission gotta go like this
+        sweet_spot_save = []
         for i in xrange(len(self.sweet_spots)):
             if type(self.sweet_spots[i]) == list:
                 try:
-                    self.sweet_spots[i] = (self.sweet_spots[i][0], self.sweet_spots[i][1], tuple(self.sweet_spots[i][2]), self.sweet_spots[i][3])
+                    if len(self.sweet_spots[i]) < 4:
+                        continue
+                    sweet_spot_save.append((self.sweet_spots[i][0], self.sweet_spots[i][1], tuple(self.sweet_spots[i][2]), self.sweet_spots[i][3]))
                 except Exception as e:
                     log.error(e)
                     pdb.set_trace()
-        self.sweet_spots = list(set(self.sweet_spots))
+        self.sweet_spots = list(set(sweet_spot_save))
         for i in xrange(len(self.sweet_spots)):
             try:
                 self.sweet_spots[i] = [self.sweet_spots[i][0], self.sweet_spots[i][1], list(self.sweet_spots[i][2]), self.sweet_spots[i][3]]
