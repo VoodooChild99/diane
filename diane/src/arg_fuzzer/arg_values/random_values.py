@@ -42,6 +42,10 @@ class RandomValues:
                 'fun': [self.printable_chars],
                 'dist': [1]
             },
+            'char': {
+                'fun': [self.printable_chars],
+                'dist': [1]
+            },
             'byte': {
                 'fun': [self.low_pos],
                 'dist': [1]
@@ -137,6 +141,9 @@ class RandomValues:
 
     def fuzz_byte_array(self, obj_creator, *kargs, **kwargs):
         return self.fuzz_type('byte', obj_creator, True, True, *kargs, **kwargs)
+    
+    def fuzz_char_array(self, obj_creator, *kargs, **kwargs):
+        return self.fuzz_type('char', obj_creator, True, True, *kargs, **kwargs)
 
     def fuzz_int_array(self, obj_creator, *kargs, **kwargs):
         return self.fuzz_type('int', obj_creator, True, True, *kargs, **kwargs)
