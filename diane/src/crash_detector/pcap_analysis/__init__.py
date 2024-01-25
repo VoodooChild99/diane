@@ -34,7 +34,7 @@ class PCAPAnalyzer:
         transmit_pkts = []
         received_pkts = []
         if os.path.exists(self.target_pcap_file):
-            for ts, pkt in dpkt.pcap.Reader(open(self.target_pcap_file, "r")):
+            for ts, pkt in dpkt.pcap.Reader(open(self.target_pcap_file, "rb")):
                 if not pkt:
                     continue
                 eth = dpkt.ethernet.Ethernet(pkt)
