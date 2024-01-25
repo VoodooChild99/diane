@@ -43,7 +43,7 @@ class RandomValues:
                 'dist': [1]
             },
             'char': {
-                'fun': [self.printable_chars],
+                'fun': [self.unicode_char],
                 'dist': [1]
             },
             'byte': {
@@ -102,6 +102,9 @@ class RandomValues:
 
     def false(self):
         return False
+    
+    def unicode_char(self):
+        random.randint(0, 65535)
 
     def printable_chars(self):
         len = numpy.random.choice(self.proposed_vals['array']['fun'], p=self.proposed_vals['array']['dist'])()
