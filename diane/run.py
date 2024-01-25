@@ -180,6 +180,8 @@ class IoTFuzzer:
 
         if phase >= Phase.FUZZING:
             self.phase = Phase.FUZZING
+            if not self.lifter:
+                self.create_lifter()
             # send functions
             map(lambda v: self.arg_fuzzer.start(v, fast_fuzz=True, ran_fun=replay_ui_async, lifter=self.lifter),
                 self.senders)
