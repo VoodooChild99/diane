@@ -500,7 +500,7 @@ class ArgFuzzer:
         m_string = m_string.replace('[]', '_array')
         return self.fuzz_res_dir + FUZZ_RES_FILE_NAME.format(m_string)
 
-    def start(self, method, fast_fuzz=False, ran_fun=lambda *args: None, reg_run=True, single_call_fuzz=False, lifter=None):
+    def start(self, method, fast_fuzz=False, ran_fun=lambda *args: None, reg_run=True, single_call_fuzz=False, lifter=None, ran_fun_sync=None):
         self.lifter = lifter
 
         name = self.get_res_complete_path(method)
@@ -512,7 +512,8 @@ class ArgFuzzer:
         self.fp = open(name, "w")
 
         if reg_run:
-            self.register_normal_run(ran_fun)
+            assert(ran_fun_sync is not None)
+            self.register_normal_run(ran_fun_sync)
 
         # start new fuzzing
         self.fuzz_history = {}

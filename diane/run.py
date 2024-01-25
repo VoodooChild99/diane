@@ -140,6 +140,7 @@ class IoTFuzzer:
         # reran run
         eval_stats = open('/tmp/stats_' + self.config['proc_name'], 'w')
         replay_ui_async = self.adbd.replay_ui_async
+        replay_ui_sync = self.adbd.replay_ui
 
         if phase >= Phase.RERAN:
             log.info("Recording user interactions")
@@ -183,18 +184,18 @@ class IoTFuzzer:
             if not self.lifter:
                 self.create_lifter()
             # send functions
-            map(lambda v: self.arg_fuzzer.start(v, fast_fuzz=True, ran_fun=replay_ui_async, lifter=self.lifter),
+            map(lambda v: self.arg_fuzzer.start(v, fast_fuzz=True, ran_fun=replay_ui_async, lifter=self.lifter, ran_fun_sync=replay_ui_sync),
                 self.senders)
 
             # send functions not fast
-            map(lambda v: self.arg_fuzzer.start(v, ran_fun=replay_ui_async, lifter=self.lifter),
+            map(lambda v: self.arg_fuzzer.start(v, ran_fun=replay_ui_async, lifter=self.lifter, ran_fun_sync=replay_ui_sync),
                 self.senders)
 
             # sweet spots
-            map(lambda v: self.arg_fuzzer.start(v, ran_fun=replay_ui_async, lifter=self.lifter), self.sp)
+            map(lambda v: self.arg_fuzzer.start(v, ran_fun=replay_ui_async, lifter=self.lifter, ran_fun_sync=replay_ui_sync), self.sp)
 
             # automated senders
-            map(lambda v: self.arg_fuzzer.start(v, ran_fun=replay_ui_async, lifter=self.lifter), self.automated_senders)
+            map(lambda v: self.arg_fuzzer.start(v, ran_fun=replay_ui_async, lifter=self.lifter, ran_fun_sync=replay_ui_sync), self.automated_senders)
 
             log.info("Fuzzing done!")
 
