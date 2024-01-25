@@ -191,8 +191,15 @@ class IoTFuzzer:
             map(lambda v: self.arg_fuzzer.start(v, ran_fun=replay_ui_async, lifter=self.lifter, ran_fun_sync=replay_ui_sync),
                 self.senders)
 
+            sp = []
+            for x in self.sp:
+                if len(x) == 1:
+                    y = x[0]
+                    if len(y) == 4:
+                        sp.append(y)
+            log.debug(sp)
             # sweet spots
-            map(lambda v: self.arg_fuzzer.start(v, ran_fun=replay_ui_async, lifter=self.lifter, ran_fun_sync=replay_ui_sync), self.sp)
+            map(lambda v: self.arg_fuzzer.start(v, ran_fun=replay_ui_async, lifter=self.lifter, ran_fun_sync=replay_ui_sync), sp)
 
             # automated senders
             map(lambda v: self.arg_fuzzer.start(v, ran_fun=replay_ui_async, lifter=self.lifter, ran_fun_sync=replay_ui_sync), self.automated_senders)
