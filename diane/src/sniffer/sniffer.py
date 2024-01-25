@@ -132,7 +132,7 @@ class Sniffer:
         self.pids = [p for p in pids if p not in old_pids]
 
     def get_opened_tcpdumps(self):
-        cmd = "sshpass -p {} ssh {}@{} \"ps | grep tcpdump | grep {}\"".format(self.pass_ap, self.user_ap, self.ip_hotspot, self.device_ip)
+        cmd = "sshpass -p {} ssh {}@{} \"ps ax | grep tcpdump | grep {}\"".format(self.pass_ap, self.user_ap, self.ip_hotspot, self.device_ip)
         p = sp.Popen(cmd, stdin=sp.PIPE, stdout=sp.PIPE, stderr=sp.PIPE, shell=True)
         o, e = p.communicate()
         dumps = [x for x in o.split('\n') if 'grep' not in x and x]
