@@ -1,4 +1,5 @@
 import json
+import pdb
 import time
 import logging
 import os
@@ -490,7 +491,11 @@ class ArgFuzzer:
         pass
 
     def get_res_complete_path(self, method):
-        s_params = '_'.join(map(str, method[2]))
+        try:
+            s_params = '_'.join(map(str, method[2]))
+        except Exception as e:
+            print(e)
+            pdb.set_trace()
         m_string = '_'.join([str(method[0]), str(method[1]),s_params, str(method[3])]).replace('u\'', '')
         m_string = m_string.replace('[]', '_array')
         return self.fuzz_res_dir + FUZZ_RES_FILE_NAME.format(m_string)
