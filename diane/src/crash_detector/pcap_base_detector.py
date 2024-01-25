@@ -41,6 +41,8 @@ class PcapBasedDetector(DefaultCrashDetector):
             start normal run.
         :return: None
         """
+        pids = self.sniffer.get_opened_tcpdumps()
+        self.sniffer.find_pids(pids)
         self.sniffer.terminate()
         self.sniffer.dump_some_traffic_to_pcap(self.normal_pcap_path)
 
