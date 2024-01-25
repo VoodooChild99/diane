@@ -161,7 +161,11 @@ class PcapBasedDetector(DefaultCrashDetector):
     def verify_reg_run(self, run_regid):
         is_conn_ok = True
         is_size_ok = True
-        prots = self.get_transport_protocols(run_regid)
+        try:
+            prots = self.get_transport_protocols(run_regid)
+        except Exception as e:
+            log.error(e)
+            return True
 
         if self.normal_run_registered:
             is_size_ok = self.verify_size(run_regid)
