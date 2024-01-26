@@ -140,7 +140,7 @@ class ADBDriver:
     def record_ui(self, events_log_path):
         print 'Starting RERAN recording'
         cmd = 'exec ' + ADB_PATH + ' -s ' + self.device_id +\
-              ' shell getevent -tt > ' + events_log_path
+              ' exec-out getevent -tt > ' + events_log_path
         print 'Executing ' + ' '.join(cmd)
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                                   stderr=subprocess.PIPE,
