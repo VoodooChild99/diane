@@ -135,7 +135,11 @@ class FridaHooker:
         self.dump_result_path = DUMP_RESULTS_PATH + "_" + self.proc_name
         self.time_log_path = TIME_LOG+ "_" + self.proc_name
 
-        self.ignore_methods = config["skip_methods"]
+        _tmp_ignore = []
+        for im in config["skip_methods"]:
+            if im not in _tmp_ignore:
+                _tmp_ignore.append(im)
+        self.ignore_methods =_tmp_ignore
         self.ignore_classes = config["skip_classes"]
         self.fhp = config['frida_hooker_pickle']
 
@@ -315,7 +319,9 @@ class FridaHooker:
         # unpickle the results, if any:
         try:
             data = pickle.load(open(self.fhp))
-            self.ignore_methods += data['skip_methods']
+            for sm in data['skip_methods']:
+                if sm not in self.ignore_methods:
+                    self.ignore_methods.append(sm)
             self.ignore_classes += data['skip_classes']
             self.good_hooks.update(data['good_hooks'])
         except:
@@ -661,7 +667,9 @@ class FridaHooker:
         self.clean_state()
         self.force_hook = force_hook
         if ignore is not None and type(ignore) == list:
-            self.ignore_methods += ignore
+            for im in ignore:
+                if im not in self.ignore_methods:
+                    self.ignore_methods.append(im)
 
         if leaves:
             return self.hook_leaves(lifter=lifter, fast_hook=fast_hook, get_instances=get_instances)
