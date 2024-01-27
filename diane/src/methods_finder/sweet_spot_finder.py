@@ -602,6 +602,10 @@ class SweetSpotFinder:
                     log.error("Apk exploded: " + str(ex))
                     log.error("Skipping this one")
                     continue
+                except Exception as e:
+                    log.error("Unknown exception: {}".format(e))
+                    log.error("Skipping this one")
+                    continue
 
                 # if the callee uses data passed to the caller, we consider the caller as
                 # a candidate sweet_spot as well
