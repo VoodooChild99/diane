@@ -307,6 +307,7 @@ class SweetSpotFinder:
         to_hook = [caller, callee]
         while True:
             try:
+                log.info("should_consider_caller: Trying to hook {}".format(to_hook))
                 self.hooker.start(to_hook, force_hook=True, get_instances=True)
                 self.set_known_obj_for_funs(to_hook)
                 self.reran_proc = ran_fun()
@@ -410,6 +411,7 @@ class SweetSpotFinder:
             to_return = []
 
             try:
+                log.info("filter_sweet_spots_ret: Trying to hook {}".format(funs))
                 self.hooker.start(funs, force_hook=True, get_instances=True)
                 self.set_known_obj_for_funs(funs)
                 self.reran_proc = ran_fun()
