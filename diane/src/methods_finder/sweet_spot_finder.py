@@ -611,9 +611,13 @@ class SweetSpotFinder:
                 # a candidate sweet_spot as well
                 if dependent_from_callers:
                     for dependent_from_caller in dependent_from_callers:
-                        if self.should_consider_caller(dependent_from_caller, callee, ran_fun):
-                            self.update_caller_worklist(dependent_from_caller, worklist)
-                            candidate_sweet_spots += [dependent_from_caller]
+                        try:
+                            if self.should_consider_caller(dependent_from_caller, callee, ran_fun):
+                                self.update_caller_worklist(dependent_from_caller, worklist)
+                                candidate_sweet_spots += [dependent_from_caller]
+                        except Exception as e:
+                            log.error("dependent_from_callers: Unknown exception: {}".format(e))
+                            log.error("dependent_from_callers: Skipping this one")
 
                 # if the method is already a candidate sweetspost and it has no other
                 # candidate sweet spots dominating it, we add it in the sweet spot list
